@@ -24,7 +24,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    // await client.connect();
+    await client.connect();
 
     const bikeCollection = client.db('bike-hub').collection('bikes');
 
@@ -32,7 +32,6 @@ async function run() {
         const result = await bikeCollection.find().toArray();
         res.send(result);
     })
-
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
