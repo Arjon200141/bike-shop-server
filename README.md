@@ -16,3 +16,12 @@ The Bike Shop API is a backend service built with Express.js and MongoDB. It pro
 - CORS: Middleware to enable Cross-Origin Resource Sharing.
 - dotenv: Module to load environment variables from a .env file.
 
+# Installation
+- Clone the Repository : https://github.com/Arjon200141/bike-shop-server.git
+- cd bike-shop-server
+- npm install
+- Set Up Environment Variables
+ DB_USER=bike-hub
+ DB_PASS=Sm3zJ6yPstG3s4fs
+ PORT=5000
+- npm start
