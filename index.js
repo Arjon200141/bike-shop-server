@@ -27,7 +27,6 @@ async function run() {
 
     const bikeCollection = client.db('bike-hub').collection('bikes');
 
-    // Endpoint to get bikes with search, filter, and sort options
     app.get('/bikes', async (req, res) => {
         const { searchTerm, brand, category, priceRange, sortOrder, page = 1, limit = 6 } = req.query;
     
