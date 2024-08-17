@@ -32,23 +32,18 @@ async function run() {
         const { searchTerm, brand, category, priceRange, sortOrder, page = 1, limit = 6 } = req.query;
     
         const query = {};
-    
-        // Searching
+
         if (searchTerm) {
             query.name = { $regex: searchTerm, $options: 'i' };
         }
-    
-        // Filtering by brand
         if (brand) {
             query.brand = brand;
         }
     
-        // Filtering by category
         if (category) {
             query.category = category;
         }
     
-        // Filtering by price range
         if (priceRange) {
             const [minPrice, maxPrice] = priceRange.split('-').map(Number);
             if (!isNaN(minPrice) && !isNaN(maxPrice)) {
@@ -58,7 +53,6 @@ async function run() {
     
         const options = {};
     
-        // Sorting
         if (sortOrder) {
             if (sortOrder === "low-to-high") {
                 options.sort = { price: 1 };
@@ -69,8 +63,21 @@ async function run() {
             }
         }
     
-        // Pagination
-        
+        const skip = (page - 1) * limit;
+        const limitNum = parseInt(limit);
+    
+        try {
+            const totalBikes = await bikeCollection.countDocuments(query);
+            const bikes = await bikeCollection.find(query, options).skip(skip).limit(limitNum).toArray();
+            res.send({
+                totalBikes,
+                bikes,
+                currentPage: parseInt(page),
+                totalPages: Math.ceil(totalBikes / limitNum),
+            });
+        } catch (error) {
+            res.status(500).send({ error: "Failed to fetch bikes data" });
+        }
     });
     
 
