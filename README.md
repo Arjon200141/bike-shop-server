@@ -6,6 +6,7 @@ The Bike Shop API is a backend service built with Express.js and MongoDB. It pro
 # Features
 
 - Get all bikes: Fetches all bike records from the MongoDB collection.
+- Search,Sort,Filter the bikes 
 - Server Ping: Confirms the successful connection to MongoDB.
 
 # Technologies Used
