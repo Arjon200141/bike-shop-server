@@ -22,15 +22,57 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
-    // Connect the client to the server	(optional starting in v4.7)
+    // Connect the client to the server (optional starting in v4.7)
     await client.connect();
 
     const bikeCollection = client.db('bike-hub').collection('bikes');
 
-    app.get('/bikes' , async(req,res)=>{
-        const result = await bikeCollection.find().toArray();
-        res.send(result);
-    })
+    // Endpoint to get bikes with search, filter, and sort options
+    app.get('/bikes', async (req, res) => {
+        const { searchTerm, brand, category, priceRange, sortOrder, page = 1, limit = 6 } = req.query;
+    
+        const query = {};
+    
+        // Searching
+        if (searchTerm) {
+            query.name = { $regex: searchTerm, $options: 'i' };
+        }
+    
+        // Filtering by brand
+        if (brand) {
+            query.brand = brand;
+        }
+    
+        // Filtering by category
+        if (category) {
+            query.category = category;
+        }
+    
+        // Filtering by price range
+        if (priceRange) {
+            const [minPrice, maxPrice] = priceRange.split('-').map(Number);
+            if (!isNaN(minPrice) && !isNaN(maxPrice)) {
+                query.price = { $gte: minPrice, $lte: maxPrice };
+            }
+        }
+    
+        const options = {};
+    
+        // Sorting
+        if (sortOrder) {
+            if (sortOrder === "low-to-high") {
+                options.sort = { price: 1 };
+            } else if (sortOrder === "high-to-low") {
+                options.sort = { price: -1 };
+            } else if (sortOrder === "newest-first") {
+                options.sort = { product_creation_date: -1 };
+            }
+        }
+    
+        // Pagination
+        
+    });
+    
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
@@ -42,10 +84,10 @@ async function run() {
 }
 run().catch(console.dir);
 
-
-app.get('/',(req,res)=>{
+app.get('/', (req, res) => {
     res.send('Bike Shop is Running');
 });
-app.listen(port , ()=>{
+
+app.listen(port, () => {
     console.log(`Bike Shop is Running at ${port}`);
-})
+});
